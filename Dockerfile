@@ -33,6 +33,7 @@ RUN set -x && \
     KEPT_PACKAGES+=(unzip) && \
     KEPT_PACKAGES+=(wget) && \
     KEPT_PACKAGES+=(gnupg2) && \
+    KEPT_PACKAGES+=(libatomic1) && \
 #    KEPT_PIP_PACKAGES+=() && \
 #    KEPT_RUBY_PACKAGES+=() && \
 # keep the TEMP package names around so we can uninstall them later:

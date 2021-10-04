@@ -66,7 +66,7 @@ touch $LOGFILE
 #java -jar "${PROG}" "${MODES_CMD[@]}" > $LOGFILE 2>$LOGFILE &
 echo ${PROG} ${MODES_CMD[@]}
 java -jar ${PROG} ${MODES_CMD[@]} \
-2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | stdbuf -o0 awk '{print "[modesfilter] " strftime("%Y/%m/%d %H:%M:%S", systime()) " " $0}'
+2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | stdbuf -o0 awk '{print "[modesfiltered] " strftime("%Y/%m/%d %H:%M:%S", systime()) " " $0}'
 
 echo "$PROG started"
 touch $PIDFILE

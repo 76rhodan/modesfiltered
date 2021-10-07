@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv bash
+#shellcheck shell=bash
+
+tail -F /var/log/modes/current | stdbuf -o0 awk '{print "[modesfiltered] " $0}'
+
+# Note, to reduce container log spam, you could add some `grep -v <term>` to this pipeline to reject certain lines.
+
+sleep 5

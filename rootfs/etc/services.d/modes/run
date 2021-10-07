@@ -8,7 +8,6 @@ APPNAME="$(hostname)/modesfiltered"
 echo "[$APPNAME][$(date)] Started as an s6 service"
 
 PROG="modesfiltered.jar"
-PROG_PATH="/home/pi/modesfiltered"
 PIDFILE="/var/run/modes.pid"
 LOGFILE="/var/log/modes.log"
 
@@ -24,44 +23,44 @@ fi
 
 # Location
 if [[ -n "$MODES_LOC" ]]; then
-    echo $MODES_LOC > $PROG_PATH/variables.txt
+    echo $MODES_LOC > $MODESFILTERED_PROG_PATH/variables.txt
 fi
 
 
 # create new files from docker-compose configuration
 # Whitelist
 if [[ -n "$MODES_WHITELIST" ]]; then
-    echo $MODES_WHITELIST > $PROG_PATH/whitelist.txt
+    echo $MODES_WHITELIST > $MODESFILTERED_PROG_PATH/whitelist.txt
 # we did not find a configuration, so lets use the saved file from install
 else
     echo "MODES_WHITELIST not configured, using standard values"
-    rm $PROG_PATH/whitelist.txt
-    cp $PROG_PATH/whitelist.install $PROG_PATH/whitelist.txt
+    rm $MODESFILTERED_PROG_PATH/whitelist.txt
+    cp $MODESFILTERED_PROG_PATH/whitelist.install $MODESFILTERED_PROG_PATH/whitelist.txt
 fi
 
 # Blacklist
 if [[ -n "$MODES_BLACKLIST" ]]; then
-    echo $MODES_BLACKLIST > $PROG_PATH/blacklist.txt
+    echo $MODES_BLACKLIST > $MODESFILTERED_PROG_PATH/blacklist.txt
 # we did not find a configuration, so lets use the saved file from install
 else
      echo "MODES_BLACKLIST not configured, using standard values"
-     rm $PROG_PATH/blacklist.txt
-     cp $PROG_PATH/blacklist.install $PROG_PATH/blacklist.txt
+     rm $MODESFILTERED_PROG_PATH/blacklist.txt
+     cp $MODESFILTERED_PROG_PATH/blacklist.install $MODESFILTERED_PROG_PATH/blacklist.txt
 fi
 
 # Callsigns
 if [[ -n "$MODES_CALLSIGNS" ]]; then
-    echo $MODES_CALLSIGNS > $PROG_PATH/callsigns.txt
+    echo $MODES_CALLSIGNS > $MODESFILTERED_PROG_PATH/callsigns.txt
 # we did not find a configuration, so lets use the saved file from install
 else
      echo "MODES_CALLSIGNS not configured, using standard values"
-     rm $PROG_PATH/callsigns.txt
-     cp $PROG_PATH/callsigns.install $PROG_PATH/callsigns.txt
+     rm $MODESFILTERED_PROG_PATH/callsigns.txt
+     cp $MODESFILTERED_PROG_PATH/callsigns.install $MODESFILTERED_PROG_PATH/callsigns.txt
 fi
 
 #sleep 20
 
-cd $PROG_PATH
+cd $MODESFILTERED_PROG_PATH
 touch $LOGFILE
 #java -jar "${PROG}" "${MODES_CMD[@]}" > $LOGFILE 2>$LOGFILE &
 echo ${PROG} ${MODES_CMD[@]}

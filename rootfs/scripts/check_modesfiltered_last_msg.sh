@@ -27,7 +27,7 @@ LAST_MSG_LOG_ENTRY_AGE=$((NOW_SECONDS - LAST_MSG_LOG_ENTRY_SECONDS))
 
 # If the log entry is older than 10 minutes (600)...
 if [[ $LAST_MSG_LOG_ENTRY_AGE -ge $MAX_LOG_TIME ]]; then
-    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] Last MSG processed more than $MAX_LOG_TIME seconds ago"
+    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] modesfiltered services will be restarted: Last MSG processed more than $MAX_LOG_TIME seconds ago"
     exit 1
 else
     if [[ -n "$VERBOSE" ]]; then

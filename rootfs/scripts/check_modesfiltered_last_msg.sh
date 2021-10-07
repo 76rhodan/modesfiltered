@@ -11,7 +11,7 @@
 # If the env variable MAX_LOG_TIME is not set, assume it to be 600 secs
 [[ -z "$MAX_LOG_TIME" ]] && MAX_LOG_TIME=600
 
-LAST_MSG_LOG_ENTRY=$(tail -100 "${MODESFILTERED_LOG_PATH}/current" | grep "MSG, " | tail -1)
+LAST_MSG_LOG_ENTRY=$(tail -100 "${MODESFILTERED_LOG_PATH}/current" | grep "^MSG, " | tail -1)
 
 # Get date/time string from log entry
 LAST_MSG_LOG_ENTRY_DATETIMESTR=$(echo $LAST_MSG_LOG_ENTRY | tr -d " " | cut -d "," -f4,5 | tr "," " " | tr "/" "-")

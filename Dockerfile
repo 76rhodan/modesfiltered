@@ -1,10 +1,16 @@
 FROM debian:buster-20210927-slim
 
-ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2
+ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
+    MODESFILTERED_PROG_PATH="/home/pi/modesfiltered" \
+    MODESFILTERED_LOG_PATH="/var/log/modesfiltered"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && apt-get install -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -o Dpkg::Options::="--force-confold" -y --no-install-recommends  --no-install-suggests ca-certificates gnupg2 software-properties-common
+
+
+# no longer needed: COPY root_certs/ /
+
 
 RUN set -x && \
 # define packages needed for installation and general management of the container:
@@ -62,15 +68,17 @@ RUN set -x && \
     git config --global advice.detachedHead false && \
 
 # Create Directories for modesfiltered
-    mkdir -p /home/pi/modesfiltered && \
+    mkdir -p "$MODESFILTERED_PROG_PATH" && \
 # pulling the script from the interwebs
     wget https://www.live-military-mode-s.eu/Rpi/modesfiltered.zip && \
 # and extract it
-    unzip -o modesfiltered.zip -d /home/pi/modesfiltered && \
+
+    unzip modesfiltered.zip -d "$MODESFILTERED_PROG_PATH" && \
+
 # Backup blacklist, whitelist and callsigns
-    cp /home/pi/modesfiltered/blacklist.txt /home/pi/modesfiltered/blacklist.install && \
-    cp /home/pi/modesfiltered/whitelist.txt /home/pi/modesfiltered/whitelist.install && \
-    cp /home/pi/modesfiltered/callsigns.txt /home/pi/modesfiltered/callsigns.install && \
+    cp "$MODESFILTERED_PROG_PATH/blacklist.txt" "$MODESFILTERED_PROG_PATH/blacklist.install" && \
+    cp "$MODESFILTERED_PROG_PATH/whitelist.txt" "$MODESFILTERED_PROG_PATH/whitelist.install" && \
+    cp "$MODESFILTERED_PROG_PATH/callsigns.txt" "$MODESFILTERED_PROG_PATH/callsigns.install" && \
 # the rest is done my the modes run script
 
 

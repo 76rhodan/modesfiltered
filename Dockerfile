@@ -1,7 +1,8 @@
 FROM debian:buster-20210902-slim
 
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
-    MODESFILTERED_PROG_PATH="/home/pi/modesfiltered"
+    MODESFILTERED_PROG_PATH="/home/pi/modesfiltered" \
+    MODESFILTERED_LOG_PATH="/var/log/modesfiltered"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 

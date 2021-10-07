@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 #shellcheck shell=bash
 
+# This script:
+#   - Checks the last 100 lines of the modesfiltered log file
+#   - Gets the latest MSG entry
+#   - If the MSG entry is older than 600 seconds pkill the task (and s6-svc will restart it automatically)
+
 # Get latest MSG line from last 100 lines of log
 LAST_MSG_LOG_ENTRY=$(tail -100 "${MODESFILTERED_LOG_PATH}/current" | grep "MSG, " | tail -1)
 
@@ -18,7 +23,6 @@ LAST_MSG_LOG_ENTRY_AGE=$((LAST_MSG_LOG_ENTRY_SECONDS - NOW_SECONDS))
 
 # If the log entry is older than 5 minutes (600)...
 if [[ $LAST_MSG_LOG_ENTRY_AGE -ge 600 ]]; then
-    echo "NOT OK!"
-else
-    echo "OK"
+    echo "[watchdog] Last MSG processed more than 600 seconds ago. Restarting modesfiltered."
+    pkill "java"
 fi

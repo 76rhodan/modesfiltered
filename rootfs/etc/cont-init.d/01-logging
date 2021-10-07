@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv bash
+#shellcheck shell=bash
+
+mkdir -p "$MODESFILTERED_LOG_PATH" > /dev/null 2>&1
+chown nobody "$MODESFILTERED_LOG_PATH" > /dev/null 2>&1

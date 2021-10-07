@@ -6,7 +6,7 @@ First of all: Thanks to [Mike](https://github.com/mikenye) for his fantastic (no
 Secondly: **Be warned!** This is highly experimental and might do unexpected and -wanted things. This is a first project and my knowledge is kind of limited.
 
 ### Requirements
-* A running instance of `dump1090` or `readsb`. Works with bare metall or dockerized versions.
+* A running instance of `dump1090`, `readsb`, or `tar1090`. Works with bare metal or dockerized versions.
 * Memory and a couple of CPU cycles. It's Java.
 
 ### example docker-compose.yml
@@ -24,6 +24,9 @@ services:
 #   in case you are using a containerized version of e.g. readsb, it's a good idea to make this container dependent on it.
 #    depends_on:
 #      - readsb
+    tmpfs:
+      - /run:exec,size=64M
+      - /var/log
     environment:
       - MODES_HOST=192.168.2.5
       - MODES_PORT=30003
@@ -33,7 +36,7 @@ services:
       - MODES_CALLSIGNS=AAL, ADR, AIB, AFL, AFR, AMT, ANA, ASL, AUA, AUI, AWU, AZA, BAW, BCS, BEE, BEL, BER, BMR, BTI, CAL, CAO, CES, CFG, CHH, CHX, CLW, CLX, CMP, COA, CSA, CSN, CTN, DAL, DEO, DLH, EIN, EJU, ELO, ELY, ENT, EXS, EWG, ETH, EZY, FIN, GMI, GWI, HAL, HLX, IBK, IBS, ISR, JEA, KAL, KLM, LBT, LDA, LGL, LLP, MSC, NAX, NLY, NWA, PGT, PIA, QTR, ROT, RUS, RYR, SAS, SBI, SKS, SRN, SWR, SXS, TAP, TCX, THA, THY, TOM, TRA, TUI, UAE, UPS, VIM, VIR, VLG, VKG, WZZ, 2BB
 ```
 
-`MODES_HOST` ip of you dump1090/readsb host or name of the container
+`MODES_HOST` ip of your dump1090/readsb/tar1090 host or name of the container
 
 `MODES_PORT` Standard is 30003, adjust to your needs, must be SBS format
 
@@ -41,6 +44,8 @@ services:
 Example for you location:
 `Friedrichsdorf, DE`
 So, basically the town / area of your receiver and the alpha-2 code of the corresponding country.
+
+`VERBOSE` set to any value to enable verbose logging (i.e., inclusion in the logs of all MSG messages)
 
 The data for whitelist, blacklist and callsigns is that what is shipped with the feeder. Adjust to your needs and location. Whitelist and Blacklist are the first two or three digits of the MODE-S hex code, the callsigns are those which are filtered out to see the interesting things. If there are no entries in the docker-compose.yml, the standard configuration will be used. What happens if you key in more than two or three digits or random stuff as callsign? I didn't try and maybe you shouldn't also.
 
@@ -73,7 +78,3 @@ Some more info about filtering out of the feeders readme:
 >
 >After having received a message without callsign the program suspends processing of the message for 10 s. This procedure is repeated up to 6 times. So all in all the program waits 60 seconds for updates of the field callsign.
 >Just before sending the message to the SQL server, the program compares the value of this message to the callsigns list.
-
-### Known issues
-* The container is spamming your docker log - I'll silence it with a later version
-* The feeder stops feeding - yes, happens and unfortunately I have no clue why. Yet.

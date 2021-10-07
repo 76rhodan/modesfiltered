@@ -32,3 +32,8 @@ else
      rm $MODESFILTERED_PROG_PATH/callsigns.txt
      cp $MODESFILTERED_PROG_PATH/callsigns.install $MODESFILTERED_PROG_PATH/callsigns.txt
 fi
+
+# Location
+if [[ -n "$MODES_LOC" ]]; then
+    echo $MODES_LOC > $MODESFILTERED_PROG_PATH/variables.txt
+fi

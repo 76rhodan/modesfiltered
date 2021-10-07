@@ -17,6 +17,6 @@ if [[ -n "$MODES_PORT" ]]; then
 fi
 
 cd "$MODESFILTERED_PROG_PATH"
-java -jar ${PROG} ${MODES_CMD[@]} 2>&1 | s6-log -bp 1 n5 s400000 S10000000 T "$MODESFILTERED_LOG_PATH" > /dev/null
+java -jar ${PROG} ${MODES_CMD[@]} 2>&1 | s6-log -bp 1 n5 s400000 S10000000 "$MODESFILTERED_LOG_PATH" > /dev/null
 
 sleep 5

@@ -1,3 +1,5 @@
+# KX1T TESTING ENVIRONMENT -- DO NOT USE FOR PRODUCTION
+#
   modesfiltered:
     image: kx1t/modesfiltered:dev
     tty: true
@@ -8,7 +10,8 @@
 #    depends_on:
 #      - tar1090
     environment:
-      - MODES_HOST=10.0.0.191
+      - MAX_LOG_TIME=10
+        MODES_HOST=10.0.0.191
       - MODES_PORT=30303
       - MODES_LOC=Belmont MA, US
       - MODES_WHITELIST=3E, 3F, AE, A3, AD, 3B, 4D, 15, 43

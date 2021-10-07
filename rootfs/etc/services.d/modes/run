@@ -4,12 +4,7 @@
 set +x
 
 APPNAME="$(hostname)/modesfiltered"
-
-echo "[$APPNAME][$(date)] Started as an s6 service"
-
 PROG="modesfiltered.jar"
-PIDFILE="/var/run/modes.pid"
-LOGFILE="/var/log/modes.log"
 
 # Host
 if [[ -n "$MODES_HOST" ]]; then
@@ -21,51 +16,9 @@ if [[ -n "$MODES_PORT" ]]; then
     MODES_CMD+=("-port $MODES_PORT")
 fi
 
-# Location
-if [[ -n "$MODES_LOC" ]]; then
-    echo $MODES_LOC > $MODESFILTERED_PROG_PATH/variables.txt
-fi
+cd "$MODESFILTERED_PROG_PATH"
+java -jar ${PROG} ${MODES_CMD[@]}
+#  \
+# 2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | stdbuf -o0 awk '{print "[modesfiltered] " strftime("%Y/%m/%d %H:%M:%S", systime()) " " $0}'
 
-
-# create new files from docker-compose configuration
-# Whitelist
-if [[ -n "$MODES_WHITELIST" ]]; then
-    echo $MODES_WHITELIST > $MODESFILTERED_PROG_PATH/whitelist.txt
-# we did not find a configuration, so lets use the saved file from install
-else
-    echo "MODES_WHITELIST not configured, using standard values"
-    rm $MODESFILTERED_PROG_PATH/whitelist.txt
-    cp $MODESFILTERED_PROG_PATH/whitelist.install $MODESFILTERED_PROG_PATH/whitelist.txt
-fi
-
-# Blacklist
-if [[ -n "$MODES_BLACKLIST" ]]; then
-    echo $MODES_BLACKLIST > $MODESFILTERED_PROG_PATH/blacklist.txt
-# we did not find a configuration, so lets use the saved file from install
-else
-     echo "MODES_BLACKLIST not configured, using standard values"
-     rm $MODESFILTERED_PROG_PATH/blacklist.txt
-     cp $MODESFILTERED_PROG_PATH/blacklist.install $MODESFILTERED_PROG_PATH/blacklist.txt
-fi
-
-# Callsigns
-if [[ -n "$MODES_CALLSIGNS" ]]; then
-    echo $MODES_CALLSIGNS > $MODESFILTERED_PROG_PATH/callsigns.txt
-# we did not find a configuration, so lets use the saved file from install
-else
-     echo "MODES_CALLSIGNS not configured, using standard values"
-     rm $MODESFILTERED_PROG_PATH/callsigns.txt
-     cp $MODESFILTERED_PROG_PATH/callsigns.install $MODESFILTERED_PROG_PATH/callsigns.txt
-fi
-
-#sleep 20
-
-cd $MODESFILTERED_PROG_PATH
-touch $LOGFILE
-#java -jar "${PROG}" "${MODES_CMD[@]}" > $LOGFILE 2>$LOGFILE &
-echo ${PROG} ${MODES_CMD[@]}
-java -jar ${PROG} ${MODES_CMD[@]} \
-2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | stdbuf -o0 awk '{print "[modesfiltered] " strftime("%Y/%m/%d %H:%M:%S", systime()) " " $0}'
-
-echo "$PROG started"
-touch $PIDFILE
+sleep 5

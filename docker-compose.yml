@@ -5,8 +5,8 @@
     hostname: modesfiltered
     restart: always
 #   in case you are using a containerized version of e.g. readsb, it's a good idea to make this container dependent on it.
-    depends_on:
-      - tar1090
+#    depends_on:
+#      - tar1090
     environment:
       - MODES_HOST=10.0.0.191
       - MODES_PORT=30303

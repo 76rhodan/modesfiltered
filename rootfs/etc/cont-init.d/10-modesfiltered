@@ -1,0 +1,34 @@
+#!/usr/bin/with-contenv bash
+#shellcheck shell=bash
+
+# create new files from docker-compose configuration
+
+# Whitelist
+if [[ -n "$MODES_WHITELIST" ]]; then
+    echo $MODES_WHITELIST > $MODESFILTERED_PROG_PATH/whitelist.txt
+# we did not find a configuration, so lets use the saved file from install
+else
+    echo "MODES_WHITELIST not configured, using standard values"
+    rm $MODESFILTERED_PROG_PATH/whitelist.txt
+    cp $MODESFILTERED_PROG_PATH/whitelist.install $MODESFILTERED_PROG_PATH/whitelist.txt
+fi
+
+# Blacklist
+if [[ -n "$MODES_BLACKLIST" ]]; then
+    echo $MODES_BLACKLIST > $MODESFILTERED_PROG_PATH/blacklist.txt
+# we did not find a configuration, so lets use the saved file from install
+else
+     echo "MODES_BLACKLIST not configured, using standard values"
+     rm $MODESFILTERED_PROG_PATH/blacklist.txt
+     cp $MODESFILTERED_PROG_PATH/blacklist.install $MODESFILTERED_PROG_PATH/blacklist.txt
+fi
+
+# Callsigns
+if [[ -n "$MODES_CALLSIGNS" ]]; then
+    echo $MODES_CALLSIGNS > $MODESFILTERED_PROG_PATH/callsigns.txt
+# we did not find a configuration, so lets use the saved file from install
+else
+     echo "MODES_CALLSIGNS not configured, using standard values"
+     rm $MODESFILTERED_PROG_PATH/callsigns.txt
+     cp $MODESFILTERED_PROG_PATH/callsigns.install $MODESFILTERED_PROG_PATH/callsigns.txt
+fi

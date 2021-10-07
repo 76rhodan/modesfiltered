@@ -31,7 +31,7 @@ if [[ $LAST_MSG_LOG_ENTRY_AGE -ge $MAX_LOG_TIME ]]; then
     exit 1
 else
     if [[ -n "$VERBOSE" ]]; then
-        echo "[watchdog] modesfiltered services appears OK: last MSG processed $LAST_MSG_LOG_ENTRY_AGE seconds ago"
+        echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] modesfiltered services appears OK: last MSG processed $LAST_MSG_LOG_ENTRY_AGE seconds ago"
         exit 0
     fi
 fi

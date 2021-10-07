@@ -11,9 +11,6 @@ services:
 #   in case you are using a containerized version of e.g. readsb, it's a good idea to make this container dependent on it.
 #    depends_on:
 #      - readsb
-    tmpfs:
-      - /run:exec,size=64M
-      - /var/log
     environment:
       - MODES_HOST=192.168.2.5
       - MODES_PORT=30003

@@ -23,10 +23,11 @@ LAST_MSG_LOG_ENTRY_AGE=$((LAST_MSG_LOG_ENTRY_SECONDS - NOW_SECONDS))
 
 # If the log entry is older than 10 minutes (600)...
 if [[ $LAST_MSG_LOG_ENTRY_AGE -ge 600 ]]; then
-    echo "[watchdog] Last MSG processed more than 600 seconds ago. Restarting modesfiltered."
-    pkill "java"
+    echo "[watchdog] Last MSG processed more than 600 seconds ago"
+    exit 1
 else
     if [[ -n "$VERBOSE" ]]; then
         echo "[watchdog] modesfiltered services appears OK"
+        exit 0
     fi
 fi

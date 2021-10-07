@@ -24,6 +24,9 @@ services:
 #   in case you are using a containerized version of e.g. readsb, it's a good idea to make this container dependent on it.
 #    depends_on:
 #      - readsb
+    tmpfs:
+      - /run:exec,size=64M
+      - /var/log
     environment:
       - MODES_HOST=192.168.2.5
       - MODES_PORT=30003
@@ -41,6 +44,8 @@ services:
 Example for you location:
 `Friedrichsdorf, DE`
 So, basically the town / area of your receiver and the alpha-2 code of the corresponding country.
+
+`VERBOSE` set to any value to enable verbose logging
 
 The data for whitelist, blacklist and callsigns is that what is shipped with the feeder. Adjust to your needs and location. Whitelist and Blacklist are the first two or three digits of the MODE-S hex code, the callsigns are those which are filtered out to see the interesting things. If there are no entries in the docker-compose.yml, the standard configuration will be used. What happens if you key in more than two or three digits or random stuff as callsign? I didn't try and maybe you shouldn't also.
 

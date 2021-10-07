@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+#shellcheck shell=bash
+
+if [[ -n "$VERBOSE" ]]; then
+    tail -qF "${MODESFILTERED_LOG_PATH}/current" 2> /dev/null | stdbuf -o0 awk '{print "[modesfiltered] " $0}'
+else
+    tail -qF "${MODESFILTERED_LOG_PATH}/current" 2> /dev/null | grep --line-buffered -v 'MSG, ' | stdbuf -o0 awk '{print "[modesfiltered] " $0}'
+fi
+sleep 1

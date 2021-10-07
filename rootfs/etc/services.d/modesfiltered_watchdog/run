@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bash
+#shellcheck shell=bash
+
+# Check health of modesfiltered every minute
+sleep 60
+
+if bash /scripts/check_modesfiltered_last_msg.sh; then
+  # Service is OK, no action needed
+  exit 0
+else
+  # Service is not OK, restart it
+  # pkill will kill the java process, and s6-svc will start it back up automatically
+  pkill java
+fi

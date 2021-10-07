@@ -1,4 +1,4 @@
-FROM debian:buster-20210902-slim
+FROM debian:buster-20210927-slim
 
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     MODESFILTERED_PROG_PATH="/home/pi/modesfiltered" \
@@ -8,16 +8,18 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && apt-get install -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -o Dpkg::Options::="--force-confold" -y --no-install-recommends  --no-install-suggests ca-certificates gnupg2 software-properties-common
 
+
 # no longer needed: COPY root_certs/ /
+
 
 RUN set -x && \
 # define packages needed for installation and general management of the container:
     TEMP_PACKAGES=() && \
-    KEPT_PACKAGES=(software-properties-common) && \
+    KEPT_PACKAGES=() && \
     KEPT_PIP_PACKAGES=() && \
     KEPT_RUBY_PACKAGES=() && \
 # Required for building multiple packages.
-    TEMP_PACKAGES+=(pkg-config) && \
+    KEPT_PACKAGES+=(pkg-config) && \
     TEMP_PACKAGES+=(git) && \
 # logging:
     KEPT_PACKAGES+=(gawk) && \
@@ -25,15 +27,12 @@ RUN set -x && \
 # required for S6 overlay
 # curl kept for healthcheck
 # ca-certificates kept for python
-    TEMP_PACKAGES+=(gnupg2) && \
     TEMP_PACKAGES+=(file) && \
     KEPT_PACKAGES+=(curl) && \
-    KEPT_PACKAGES+=(ca-certificates) && \
 # a few KEPT_PACKAGES for debugging - they can be removed in the future
     KEPT_PACKAGES+=(psmisc procps nano) && \
 #
 # add your own packages here between the (), repeat lines for each added package:
-#    KEPT_PACKAGES+=(openjdk-8-jre) && \
     KEPT_PACKAGES+=(unzip) && \
     KEPT_PACKAGES+=(wget) && \
     KEPT_PACKAGES+=(gnupg2) && \
@@ -43,11 +42,11 @@ RUN set -x && \
 # keep the TEMP package names around so we can uninstall them later:
     echo ${TEMP_PACKAGES[*]} > /tmp/vars.tmp && \
 #
-# Install all the KEPT packages (+ pkgconfig):
+# Install all the KEPT packages:
     apt-get update && \
     apt-get install -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -o Dpkg::Options::="--force-confold" -y --no-install-recommends  --no-install-suggests\
-    pkg-config ${KEPT_PACKAGES[@]} && \
-    
+        ${KEPT_PACKAGES[@]} && \
+
     wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
     add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
     apt-get update && apt-get install -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -o Dpkg::Options::="--force-confold" -y --no-install-recommends  --no-install-suggests\
@@ -73,7 +72,9 @@ RUN set -x && \
 # pulling the script from the interwebs
     wget https://www.live-military-mode-s.eu/Rpi/modesfiltered.zip && \
 # and extract it
+
     unzip modesfiltered.zip -d "$MODESFILTERED_PROG_PATH" && \
+
 # Backup blacklist, whitelist and callsigns
     cp "$MODESFILTERED_PROG_PATH/blacklist.txt" "$MODESFILTERED_PROG_PATH/blacklist.install" && \
     cp "$MODESFILTERED_PROG_PATH/whitelist.txt" "$MODESFILTERED_PROG_PATH/whitelist.install" && \

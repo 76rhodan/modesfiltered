@@ -5,7 +5,10 @@
 sleep 60
 
 if bash /scripts/check_modesfiltered_last_msg.sh; then
-  echo "true"
+  # Service is OK, no action needed
+  exit 0
 else
-  echo "false"
+  # Service is not OK, restart it
+  # pkill will kill the java process, and s6-svc will start it back up automatically
+  pkill java
 fi

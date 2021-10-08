@@ -14,10 +14,10 @@
 LAST_MSG_LOG_ENTRY=$(tail -100 "${MODESFILTERED_LOG_PATH}/current" | grep "MSG, " | tail -1)
 
 # Get date/time string from log entry
-LAST_MSG_LOG_ENTRY_DATETIMESTR=$(echo $LAST_MSG_LOG_ENTRY | tr -d " " | cut -d "," -f4,5 | tr "," " " | tr "/" "-")
+LAST_MSG_LOG_ENTRY_DATETIMESTR=$(awk -F '[\\]\\[ ]' '{gsub("/","-",$4);print $4,$5}' <<< "$LAST_MSG_LOG_ENTRY")
 
 # Get seconds since epoch from date/time string
-LAST_MSG_LOG_ENTRY_SECONDS=$(date -d "$(echo $LAST_MSG_LOG_ENTRY_DATETIMESTR)" +%s)
+LAST_MSG_LOG_ENTRY_SECONDS=$(date -d "$LAST_MSG_LOG_ENTRY_DATETIMESTR" +%s)
 
 # Get seconds since epoch for now
 NOW_SECONDS=$(date +%s)
@@ -27,11 +27,11 @@ LAST_MSG_LOG_ENTRY_AGE=$((NOW_SECONDS - LAST_MSG_LOG_ENTRY_SECONDS))
 
 # If the log entry is older than 10 minutes (600)...
 if [[ $LAST_MSG_LOG_ENTRY_AGE -ge $MAX_LOG_TIME ]]; then
-    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] modesfiltered services will be restarted: Last MSG processed more than $MAX_LOG_TIME seconds ago"
+    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] modesfiltered service appears stale: last MSG processed $LAST_MSG_LOG_ENTRY_AGE (> $MAX_LOG_TIME) seconds ago"
     exit 1
 else
     if [[ -n "$VERBOSE" ]]; then
-        echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] modesfiltered services appear OK: last MSG processed $LAST_MSG_LOG_ENTRY_AGE seconds ago"
+        echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] modesfiltered service appears OK: last MSG processed $LAST_MSG_LOG_ENTRY_AGE (<= $MAX_LOG_TIME) seconds ago"
         exit 0
     fi
 fi

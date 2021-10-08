@@ -2,8 +2,8 @@
 #shellcheck shell=bash
 
 if [[ -n "$VERBOSE" ]]; then
-    tail -qF "${MODESFILTERED_LOG_PATH}/current" 2> /dev/null | stdbuf -o0 awk '{print "[modesfiltered]" strftime("[%Y/%m/%d %H:%M:%S] ", systime()) $0}'
+    stdbuf -oL tail -qF "${MODESFILTERED_LOG_PATH}/current" 2> /dev/null
 else
-    tail -qF "${MODESFILTERED_LOG_PATH}/current" 2> /dev/null | grep --line-buffered -v 'MSG, ' | stdbuf -o0 awk '{print "[modesfiltered]" strftime("[%Y/%m/%d %H:%M:%S] ", systime()) $0}'
+    stdbuf -oL tail -qF "${MODESFILTERED_LOG_PATH}/current" 2> /dev/null | grep --line-buffered -v '] MSG, '
 fi
 sleep 1

@@ -3,3 +3,4 @@
 
 mkdir -p "$MODESFILTERED_LOG_PATH" > /dev/null 2>&1
 chown nobody "$MODESFILTERED_LOG_PATH" > /dev/null 2>&1
+date +%s > "$MODESFILTERED_LOG_PATH/last_restart_time"

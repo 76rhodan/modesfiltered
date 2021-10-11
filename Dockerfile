@@ -84,6 +84,7 @@ RUN set -x && \
     curl --compressed -s https://raw.githubusercontent.com/mikenye/deploy-s6-overlay/master/deploy-s6-overlay.sh | sh && \
 #
 # write git commit version and time to log:
+a=$(cat .git/HEAD) && a=${a##*/} && [[ "$a" == "" ]] && a=$a || a=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) && \ 
 echo "$(git rev-parse --abbrev-ref HEAD)_($(git ls-remote https://github.com/kx1t/docker-planefence HEAD | awk '{ print substr($1,1,7)}'))_$(date +%Y-%m-%d_%T%Z)" > /.build_version && \
 #
 #

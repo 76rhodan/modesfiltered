@@ -8,10 +8,6 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && apt-get install -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -o Dpkg::Options::="--force-confold" -y --no-install-recommends  --no-install-suggests ca-certificates gnupg2 software-properties-common
 
-
-# no longer needed: COPY root_certs/ /
-
-
 RUN set -x && \
 # define packages needed for installation and general management of the container:
     TEMP_PACKAGES=() && \
@@ -55,7 +51,9 @@ RUN set -x && \
 # Add the following if you have PIP or GEM packages to install:
 #    pip install ${KEPT_PIP_PACKAGES[@]} && \
 #    gem install ${KEPT_RUBY_PACKAGES} && \
+#
 echo "Done installing KEPT packages"
+#
 
 # Now copy the files from the rootfs directory into place:
 COPY rootfs/ /
@@ -66,38 +64,28 @@ RUN set -x && \
     TEMP_PACKAGES="$(</tmp/vars.tmp)" && \
     apt-get install -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -o Dpkg::Options::="--force-confold" -y --no-install-recommends  --no-install-suggests ${TEMP_PACKAGES[@]} && \
     git config --global advice.detachedHead false && \
-
 # Create Directories for modesfiltered
     mkdir -p "$MODESFILTERED_PROG_PATH" && \
 # pulling the script from the interwebs
     wget https://www.live-military-mode-s.eu/Rpi/modesfiltered.zip && \
 # and extract it
-
     unzip modesfiltered.zip -d "$MODESFILTERED_PROG_PATH" && \
-
 # Backup blacklist, whitelist and callsigns
     cp "$MODESFILTERED_PROG_PATH/blacklist.txt" "$MODESFILTERED_PROG_PATH/blacklist.install" && \
     cp "$MODESFILTERED_PROG_PATH/whitelist.txt" "$MODESFILTERED_PROG_PATH/whitelist.install" && \
     cp "$MODESFILTERED_PROG_PATH/callsigns.txt" "$MODESFILTERED_PROG_PATH/callsigns.install" && \
-# the rest is done my the modes run script
-
-
-# If you need to clone any GIT repos, do it like this:
-#   mkdir -p git && \
-#   pushd git && \
-#   git clone https://github.com/user/myrepo && \
-#   pushd myrepo && \
-#   #Insert here anything you'd like to do with the repository
-#   popd && \
-#   If there are multiple repos, copy & repeat the lines between "pushd myrepo" and "popd"
-#   popd && \
-
+# the rest is done by the modes run script
+#
 # This is useful while debugging your container:
     echo "alias dir=\"ls -alsv\"" >> /root/.bashrc && \
     echo "alias nano=\"nano -l\"" >> /root/.bashrc && \
 #
 # install S6 Overlay
     curl --compressed -s https://raw.githubusercontent.com/mikenye/deploy-s6-overlay/master/deploy-s6-overlay.sh | sh && \
+#
+# write git commit version and time to log:
+echo "$(git rev-parse --abbrev-ref HEAD)_($(git ls-remote https://github.com/kx1t/docker-planefence HEAD | awk '{ print substr($1,1,7)}'))_$(date +%Y-%m-%d_%T%Z)" > /.build_version && \
+#
 #
 # Clean up
     TEMP_PACKAGES="$(</tmp/vars.tmp)" && \
@@ -113,5 +101,3 @@ RUN set -x && \
 	     /git
 
 ENTRYPOINT [ "/init" ]
-
-# Add any ports you want to expose by default. If none are needed, you can leave out the EXPOSE command:

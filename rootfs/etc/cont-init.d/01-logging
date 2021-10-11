@@ -2,4 +2,6 @@
 #shellcheck shell=bash
 
 mkdir -p "$MODESFILTERED_LOG_PATH" > /dev/null 2>&1
+chmod a=rwx "$MODESFILTERED_LOG_PATH" > /dev/null 2>&1
 chown nobody "$MODESFILTERED_LOG_PATH" > /dev/null 2>&1
+echo "[modesfiltered][$(date +"%Y/%m/%d %H:%M:%S")] Logging started; build version $(cat /.build_version)"

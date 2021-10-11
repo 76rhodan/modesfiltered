@@ -4,11 +4,22 @@
 # Check health of modesfiltered every minute
 sleep 60
 
+# define MAX_RESTART_INTERVAL to be the max time (secs) between restarts. This will make sure that the service
+# will not restart too often in times of low traffic.
+[[ -z "$MAX_RESTART_INTERVAL" ]] && MAX_RESTART_INTERVAL=600
+[[ ! -f "$MODESFILTERED_LOG_PATH/last_restart_time" ]] && date +%s > "$MODESFILTERED_LOG_PATH/last_restart_time"
+
 if bash /scripts/check_modesfiltered_last_msg.sh; then
   # Service is OK, no action needed
   exit 0
 else
-  # Service is not OK, restart it
+  # Service is not OK, restart it if it was restarted more than MAX_RESTART_INTERVAL ago
   # pkill will kill the java process, and s6-svc will start it back up automatically
-  pkill java
+  if (( $(date +%s) - $(cat "$MODESFILTERED_LOG_PATH/last_restart_time") > MAX_RESTART_INTERVAL )); then
+    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] restarting the modesfiltered process."
+    pkill java
+    date +%s > "$MODESFILTERED_LOG_PATH/last_restart_time"
+  else
+    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] modesfiltered process was started $(( $(date +%s) - $(cat "$MODESFILTERED_LOG_PATH/last_restart_time") )) (< $MAX_RESTART_INTERVAL) seconds ago. We'll give the system some more time to recover."
+  fi
 fi

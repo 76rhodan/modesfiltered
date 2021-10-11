@@ -28,6 +28,7 @@ services:
       - /run:exec,size=64M
       - /var/log
     environment:
+      - VERBOSE=true
       - MODES_HOST=192.168.2.5
       - MODES_PORT=30003
       - MODES_LOC=Friedrichsdorf, DE

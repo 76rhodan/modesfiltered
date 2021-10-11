@@ -86,7 +86,7 @@ RUN set -x && \
 #
 # write git commit version and time to log:
 a=$(cat tmp/HEAD) && \
-echo "${a##*/}_($(git ls-remote https://github.com/kx1t/docker-planefence HEAD | awk '{ print substr($1,1,7)}'))_$(date +%Y-%m-%d_%T%Z)" > /.build_version && \
+echo "${a##*/}_($(git ls-remote https://github.com/76rhodan/modesfiltered HEAD | awk '{ print substr($1,1,7)}'))_$(date +%Y-%m-%d_%T%Z)" > /.build_version && \
 #
 #
 # Clean up

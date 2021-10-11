@@ -20,6 +20,6 @@ else
     pkill java
     date +%s > "$MODESFILTERED_LOG_PATH/last_restart_time"
   else
-    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] Modesfiltered process was started $(( $(date +%s) - $(cat "$MODESFILTERED_LOG_PATH/last_restart_time") )) (< $MAX_RESTART_INTERVAL) seconds ago. We'll give the system some more time (to recover."
+    echo "[watchdog][$(date +"%Y/%m/%d %H:%M:%S")] Modesfiltered process was started $(( $(date +%s) - $(cat "$MODESFILTERED_LOG_PATH/last_restart_time") )) (< $MAX_RESTART_INTERVAL) seconds ago. We'll give the system some more time to recover."
   fi
 fi

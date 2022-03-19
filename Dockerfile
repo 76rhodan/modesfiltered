@@ -1,4 +1,4 @@
-FROM debian:buster-20211011-slim
+FROM ghcr.io/sdr-enthusiasts/docker-baseimage:base
 
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     MODESFILTERED_PROG_PATH="/home/pi/modesfiltered" \
@@ -46,7 +46,7 @@ RUN set -x && \
     wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
     add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
     apt-get update && apt-get install -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -o Dpkg::Options::="--force-confold" -y --no-install-recommends  --no-install-suggests\
-    adoptopenjdk-8-hotspot-jre && \
+    adoptopenjdk-16-hotspot-jre && \
 #
 # Add the following if you have PIP or GEM packages to install:
 #    pip install ${KEPT_PIP_PACKAGES[@]} && \

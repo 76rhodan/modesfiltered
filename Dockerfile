@@ -1,4 +1,4 @@
-FROM debian:buster-20220418-slim
+FROM debian:buster-20220509-slim
 
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
     MODESFILTERED_PROG_PATH="/home/pi/modesfiltered" \
